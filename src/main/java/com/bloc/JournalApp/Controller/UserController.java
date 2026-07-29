@@ -1,8 +1,10 @@
 package com.bloc.JournalApp.Controller;
 
+import com.bloc.JournalApp.API.Response.WeatherResponse;
 import com.bloc.JournalApp.Repository.UserRepository;
 import com.bloc.JournalApp.Service.JournalEntryService;
 import com.bloc.JournalApp.Service.UserService;
+import com.bloc.JournalApp.Service.WeatherService;
 import com.bloc.JournalApp.entity.JournalEntry;
 import com.bloc.JournalApp.entity.User;
 import org.bson.types.ObjectId;
@@ -31,10 +33,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getAll();
-    }
+    @Autowired
+    private WeatherService weatherservice;
 
     @PostMapping
     public void createUser(@RequestBody User user){
@@ -58,7 +58,17 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+    @GetMapping
+    public ResponseEntity<?> greeting(){
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weatherResponse = weatherservice.getWeather("Mumbai");
+        String greeting=" ";
+        if(weatherResponse!=null){
+            greeting=", Weather Feels Like" + weatherResponse.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hi" + authentication.getName() +  greeting ,HttpStatus.OK);
 
+    }
 }
 
 
