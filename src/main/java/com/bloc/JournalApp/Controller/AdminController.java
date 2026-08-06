@@ -20,10 +20,11 @@ public class AdminController {
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUsers(){
         List<User> all=userService.getAll();
-        if(all!=null && !all.isEmpty()){
-            return new ResponseEntity<>(all, HttpStatus.OK);
-        }
+        
+        if(all==null || all.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
     @PostMapping("/create-admin-user")
